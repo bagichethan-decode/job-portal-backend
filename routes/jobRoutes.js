@@ -4,7 +4,11 @@ const router = express.Router();
 const jobController = require("../controllers/jobController");
 
 router.get("/", jobController.getJobs);
+
 router.post("/", jobController.createJob);
+
 router.get("/search", jobController.searchJobs);
+
+router.get("/:id", jobController.getJobById);
 
 module.exports = router;

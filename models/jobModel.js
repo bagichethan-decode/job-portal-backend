@@ -28,17 +28,27 @@ const searchJobs = (keyword, callback) => {
         ORDER BY created_at DESC
     `;
 
-    const searchTerm = `%${keyword}%`;
+    const searchKeyword = `%${keyword}%`;
 
     db.query(
         sql,
-        [searchTerm, searchTerm, searchTerm],
+        [searchKeyword, searchKeyword, searchKeyword],
         callback
     );
+};
+
+const getJobById = (jobId, callback) => {
+    const sql = `
+        SELECT * FROM jobs
+        WHERE id = ?
+    `;
+
+    db.query(sql, [jobId], callback);
 };
 
 module.exports = {
     getAllJobs,
     createJob,
-    searchJobs
+    searchJobs,
+    getJobById
 };

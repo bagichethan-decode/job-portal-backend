@@ -16,6 +16,13 @@ const createApplication = (req, res) => {
         (err, result) => {
             if (err) {
                 console.error(err);
+
+                if (err.code === "ER_DUP_ENTRY") {
+                    return res.status(409).json({
+                        message: "You have already applied for this job"
+                    });
+                }
+
                 return res.status(500).json({
                     message: "Failed to create application"
                 });

@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 
 const applicationController = require("../controllers/applicationController");
+const authMiddleware = require("../middleware/authMiddleware");
 
-router.post("/", applicationController.createApplication);
-router.get("/:userId", applicationController.getApplicationsByUser);
+router.post("/", authMiddleware, applicationController.createApplication);
+router.get("/", authMiddleware, applicationController.getApplicationsByUser);
 
 module.exports = router;

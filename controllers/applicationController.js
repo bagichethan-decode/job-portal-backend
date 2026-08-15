@@ -1,11 +1,12 @@
 const applicationModel = require("../models/applicationModel");
 
 const createApplication = (req, res) => {
-    const { userId, jobId } = req.body;
+    const { jobId } = req.body;
+    const userId = req.user.userId;
 
-    if (!userId || !jobId) {
+    if (!jobId) {
         return res.status(400).json({
-            message: "userId and jobId are required"
+            message: "jobId is required"
         });
     }
 
@@ -29,7 +30,7 @@ const createApplication = (req, res) => {
 };
 
 const getApplicationsByUser = (req, res) => {
-    const { userId } = req.params;
+    const userId = req.user.userId;
 
     applicationModel.getApplicationsByUser(
         userId,

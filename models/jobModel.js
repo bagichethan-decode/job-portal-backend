@@ -19,7 +19,26 @@ const createJob = (title, company, description, location, callback) => {
     );
 };
 
+const searchJobs = (keyword, callback) => {
+    const sql = `
+        SELECT * FROM jobs
+        WHERE title LIKE ?
+        OR company LIKE ?
+        OR location LIKE ?
+        ORDER BY created_at DESC
+    `;
+
+    const searchTerm = `%${keyword}%`;
+
+    db.query(
+        sql,
+        [searchTerm, searchTerm, searchTerm],
+        callback
+    );
+};
+
 module.exports = {
     getAllJobs,
-    createJob
+    createJob,
+    searchJobs
 };

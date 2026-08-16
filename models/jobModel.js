@@ -46,9 +46,25 @@ const getJobById = (jobId, callback) => {
     db.query(sql, [jobId], callback);
 };
 
+const updateJob = (jobId, title, company, description, location, callback) => {
+    const sql = `
+        UPDATE jobs
+        SET title = ?, company = ?, description = ?, location = ?
+        WHERE id = ?
+    `;
+
+    db.query(
+        sql,
+        [title, company, description, location, jobId],
+        callback
+    );
+};
+
+
 module.exports = {
     getAllJobs,
     createJob,
     searchJobs,
-    getJobById
+    getJobById,
+    updateJob
 };

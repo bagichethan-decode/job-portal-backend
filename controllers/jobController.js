@@ -85,9 +85,47 @@ const getJobById = (req, res) => {
     });
 };
 
+const updateJob = (req, res) => {
+    const jobId = req.params.id;
+    const { title, company, description, location } = req.body;
+
+    if (!title || !company || !description || !location) {
+        return res.status(400).json({
+            message: "All fields are required"
+        });
+    }
+
+    jobModel.updateJob(
+        jobId,
+        title,
+        company,
+        description,
+        location,
+        (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({
+                    message: "Failed to update job"
+                });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({
+                    message: "Job not found"
+                });
+            }
+
+            res.status(200).json({
+                message: "Job updated successfully"
+            });
+        }
+    );
+};
+
 module.exports = {
     getJobs,
     createJob,
     searchJobs,
-    getJobById
+    getJobById,
+    updateJob
 };

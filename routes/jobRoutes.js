@@ -11,4 +11,6 @@ router.get("/search", jobController.searchJobs);
 
 router.get("/:id", jobController.getJobById);
 
+router.put("/:id", jobController.updateJob);
+
 module.exports = router;

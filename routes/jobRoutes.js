@@ -13,4 +13,6 @@ router.get("/:id", jobController.getJobById);
 
 router.put("/:id", jobController.updateJob);
 
+router.delete("/:id", jobController.deleteJob);
+
 module.exports = router;

@@ -45,8 +45,32 @@ const deleteApplication = (applicationId, userId, callback) => {
     );
 };
 
+const getApplicationById = (applicationId, userId, callback) => {
+    const sql = `
+        SELECT 
+            applications.id,
+            applications.user_id,
+            applications.job_id,
+            applications.applied_at,
+            jobs.title,
+            jobs.company,
+            jobs.location
+        FROM applications
+        JOIN jobs ON applications.job_id = jobs.id
+        WHERE applications.id = ?
+        AND applications.user_id = ?
+    `;
+
+    db.query(
+        sql,
+        [applicationId, userId],
+        callback
+    );
+};
+
 module.exports = {
     createApplication,
     getApplicationsByUser,
-    deleteApplication
+    deleteApplication,
+    getApplicationById
 };

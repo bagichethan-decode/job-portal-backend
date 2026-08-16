@@ -82,8 +82,35 @@ const deleteApplication = (req, res) => {
     );
 };
 
+const getApplicationById = (req, res) => {
+    const applicationId = req.params.id;
+    const userId = req.user.userId;
+
+    applicationModel.getApplicationById(
+        applicationId,
+        userId,
+        (err, results) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({
+                    message: "Failed to fetch application"
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(404).json({
+                    message: "Application not found"
+                });
+            }
+
+            res.status(200).json(results[0]);
+        }
+    );
+};
+
 module.exports = {
     createApplication,
     getApplicationsByUser,
-    deleteApplication
+    deleteApplication,
+    getApplicationById
 };

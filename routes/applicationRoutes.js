@@ -4,10 +4,28 @@ const router = express.Router();
 const applicationController = require("../controllers/applicationController");
 const authMiddleware = require("../middleware/authMiddleware");
 
-router.post("/", authMiddleware, applicationController.createApplication);
+router.post(
+    "/",
+    authMiddleware,
+    applicationController.createApplication
+);
 
-router.get("/", authMiddleware, applicationController.getApplicationsByUser);
+router.get(
+    "/",
+    authMiddleware,
+    applicationController.getApplicationsByUser
+);
 
-router.delete("/:id", authMiddleware, applicationController.deleteApplication);
+router.get(
+    "/:id",
+    authMiddleware,
+    applicationController.getApplicationById
+);
+
+router.delete(
+    "/:id",
+    authMiddleware,
+    applicationController.deleteApplication
+);
 
 module.exports = router;

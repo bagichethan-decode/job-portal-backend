@@ -23,6 +23,7 @@ CREATE TABLE applications (
     user_id INT NOT NULL,
     job_id INT NOT NULL,
     applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(20) NOT NULL DEFAULT 'APPLIED',
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (job_id) REFERENCES jobs(id)
 );

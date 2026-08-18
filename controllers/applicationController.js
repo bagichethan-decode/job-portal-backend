@@ -108,9 +108,64 @@ const getApplicationById = (req, res) => {
     );
 };
 
+
+const updateApplicationStatus = (req, res) => {
+    const applicationId = req.params.id;
+    const userId = req.user.userId;
+    const { status } = req.body;
+
+    const allowedStatuses = [
+        "APPLIED",
+        "SHORTLISTED",
+        "INTERVIEW",
+        "REJECTED",
+        "OFFERED"
+    ];
+
+    if (!status) {
+        return res.status(400).json({
+            message: "Status is required"
+        });
+    }
+
+    if (!allowedStatuses.includes(status)) {
+        return res.status(400).json({
+            message: "Invalid application status"
+        });
+    }
+
+    applicationModel.updateApplicationStatus(
+        applicationId,
+        userId,
+        status,
+        (err, result) => {
+            if (err) {
+                console.error(err);
+
+                return res.status(500).json({
+                    message: "Failed to update application status"
+                });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({
+                    message: "Application not found"
+                });
+            }
+
+            res.status(200).json({
+                message: "Application status updated successfully",
+                status: status
+            });
+        }
+    );
+};
+
+
 module.exports = {
     createApplication,
     getApplicationsByUser,
     deleteApplication,
-    getApplicationById
+    getApplicationById,
+    updateApplicationStatus
 };

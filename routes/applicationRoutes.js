@@ -22,6 +22,12 @@ router.get(
     applicationController.getApplicationById
 );
 
+router.put(
+    "/:id/status",
+    authMiddleware,
+    applicationController.updateApplicationStatus
+);
+
 router.delete(
     "/:id",
     authMiddleware,

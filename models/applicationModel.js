@@ -20,6 +20,7 @@ const getApplicationsByUser = (userId, callback) => {
             applications.user_id,
             applications.job_id,
             applications.applied_at,
+            applications.status,
             jobs.title,
             jobs.company,
             jobs.location
@@ -52,6 +53,7 @@ const getApplicationById = (applicationId, userId, callback) => {
             applications.user_id,
             applications.job_id,
             applications.applied_at,
+            applications.status,
             jobs.title,
             jobs.company,
             jobs.location
@@ -68,9 +70,29 @@ const getApplicationById = (applicationId, userId, callback) => {
     );
 };
 
+const updateApplicationStatus = (
+    applicationId,
+    userId,
+    status,
+    callback
+) => {
+    const sql = `
+        UPDATE applications
+        SET status = ?
+        WHERE id = ? AND user_id = ?
+    `;
+
+    db.query(
+        sql,
+        [status, applicationId, userId],
+        callback
+    );
+};
+
 module.exports = {
     createApplication,
     getApplicationsByUser,
     deleteApplication,
-    getApplicationById
+    getApplicationById,
+    updateApplicationStatus
 };

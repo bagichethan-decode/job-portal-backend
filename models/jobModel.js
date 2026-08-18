@@ -6,6 +6,28 @@ const getAllJobs = (callback) => {
     db.query(sql, callback);
 };
 
+const getJobsWithFilters = (location, page, limit, callback) => {
+    const offset = (page - 1) * limit;
+
+    let sql = `
+        SELECT *
+        FROM jobs
+    `;
+
+    const values = [];
+
+    if (location) {
+        sql += ` WHERE location LIKE ?`;
+        values.push(`%${location}%`);
+    }
+
+    sql += ` ORDER BY created_at DESC LIMIT ? OFFSET ?`;
+
+    values.push(limit, offset);
+
+    db.query(sql, values, callback);
+};
+
 const createJob = (title, company, description, location, callback) => {
     const sql = `
         INSERT INTO jobs (title, company, description, location)
@@ -79,6 +101,7 @@ const deleteJob = (jobId, callback) => {
 
 module.exports = {
     getAllJobs,
+    getJobsWithFilters,
     createJob,
     searchJobs,
     getJobById,

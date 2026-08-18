@@ -1,16 +1,44 @@
 const jobModel = require("../models/jobModel");
 
 const getJobs = (req, res) => {
-    jobModel.getAllJobs((err, results) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({
-                message: "Failed to fetch jobs"
+    const { location, page = 1, limit = 10 } = req.query;
+
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+
+    if (isNaN(pageNumber) || pageNumber < 1) {
+        return res.status(400).json({
+            message: "Page must be a positive number"
+        });
+    }
+
+    if (isNaN(limitNumber) || limitNumber < 1 || limitNumber > 100) {
+        return res.status(400).json({
+            message: "Limit must be between 1 and 100"
+        });
+    }
+
+    jobModel.getJobsWithFilters(
+        location,
+        pageNumber,
+        limitNumber,
+        (err, results) => {
+            if (err) {
+                console.error(err);
+
+                return res.status(500).json({
+                    message: "Failed to fetch jobs"
+                });
+            }
+
+            res.status(200).json({
+                page: pageNumber,
+                limit: limitNumber,
+                count: results.length,
+                jobs: results
             });
         }
-
-        res.status(200).json(results);
-    });
+    );
 };
 
 const createJob = (req, res) => {

@@ -38,9 +38,11 @@ const createApplication = (req, res) => {
 
 const getApplicationsByUser = (req, res) => {
     const userId = req.user.userId;
+    const status = req.query.status;
 
     applicationModel.getApplicationsByUser(
         userId,
+        status,
         (err, results) => {
             if (err) {
                 console.error(err);

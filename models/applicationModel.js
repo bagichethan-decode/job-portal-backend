@@ -12,9 +12,8 @@ const createApplication = (userId, jobId, callback) => {
         callback
     );
 };
-
-const getApplicationsByUser = (userId, callback) => {
-    const sql = `
+const getApplicationsByUser = (userId, status, callback) => {
+    let sql = `
         SELECT 
             applications.id,
             applications.user_id,
@@ -27,10 +26,18 @@ const getApplicationsByUser = (userId, callback) => {
         FROM applications
         JOIN jobs ON applications.job_id = jobs.id
         WHERE applications.user_id = ?
-        ORDER BY applications.applied_at DESC
     `;
 
-    db.query(sql, [userId], callback);
+    const values = [userId];
+
+    if (status) {
+        sql += ` AND applications.status = ?`;
+        values.push(status);
+    }
+
+    sql += ` ORDER BY applications.applied_at DESC`;
+
+    db.query(sql, values, callback);
 };
 
 const deleteApplication = (applicationId, userId, callback) => {

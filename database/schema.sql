@@ -24,6 +24,9 @@ CREATE TABLE applications (
     job_id INT NOT NULL,
     applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(20) NOT NULL DEFAULT 'APPLIED',
+
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (job_id) REFERENCES jobs(id)
+    FOREIGN KEY (job_id) REFERENCES jobs(id),
+
+    UNIQUE (user_id, job_id)
 );

@@ -163,11 +163,43 @@ const updateApplicationStatus = (req, res) => {
     );
 };
 
+const getApplicationStats = (req, res) => {
+    const userId = req.user.userId;
+
+    applicationModel.getApplicationStats(
+        userId,
+        (err, results) => {
+            if (err) {
+                console.error(err);
+
+                return res.status(500).json({
+                    message: "Failed to fetch application statistics"
+                });
+            }
+
+            const stats = {
+                APPLIED: 0,
+                SHORTLISTED: 0,
+                INTERVIEW: 0,
+                REJECTED: 0,
+                OFFERED: 0
+            };
+
+            results.forEach((row) => {
+                stats[row.status] = row.count;
+            });
+
+            res.status(200).json(stats);
+        }
+    );
+};
+
 
 module.exports = {
     createApplication,
     getApplicationsByUser,
     deleteApplication,
     getApplicationById,
-    updateApplicationStatus
+    updateApplicationStatus,
+    getApplicationStats
 };

@@ -96,10 +96,22 @@ const updateApplicationStatus = (
     );
 };
 
+const getApplicationStats = (userId, callback) => {
+    const sql = `
+        SELECT status, COUNT(*) AS count
+        FROM applications
+        WHERE user_id = ?
+        GROUP BY status
+    `;
+
+    db.query(sql, [userId], callback);
+};
+
 module.exports = {
     createApplication,
     getApplicationsByUser,
     deleteApplication,
     getApplicationById,
-    updateApplicationStatus
+    updateApplicationStatus,
+    getApplicationStats
 };

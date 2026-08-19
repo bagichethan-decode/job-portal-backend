@@ -1,7 +1,9 @@
 const express = require("express");
+
 const router = express.Router();
 
 const applicationController = require("../controllers/applicationController");
+
 const authMiddleware = require("../middleware/authMiddleware");
 
 router.post(
@@ -14,6 +16,12 @@ router.get(
     "/",
     authMiddleware,
     applicationController.getApplicationsByUser
+);
+
+router.get(
+    "/stats",
+    authMiddleware,
+    applicationController.getApplicationStats
 );
 
 router.get(

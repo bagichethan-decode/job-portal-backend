@@ -11,6 +11,39 @@ const registerUser = (req, res) => {
         });
     }
 
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (trimmedName.length < 2) {
+        return res.status(400).json({
+            message: "Name must be at least 2 characters long"
+        });
+    }
+
+    if (trimmedName.length > 100) {
+        return res.status(400).json({
+            message: "Name must not exceed 100 characters"
+        });
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+        return res.status(400).json({
+            message: "Please provide a valid email address"
+        });
+    }
+
+    if (trimmedEmail.length > 150) {
+        return res.status(400).json({
+            message: "Email must not exceed 150 characters"
+        });
+    }
+
+    if (password.length < 8) {
+        return res.status(400).json({
+            message: "Password must be at least 8 characters long"
+        });
+    }
+
     bcrypt.hash(password, 10, (err, hashedPassword) => {
         if (err) {
             console.error(err);
@@ -20,8 +53,8 @@ const registerUser = (req, res) => {
         }
 
         userModel.createUser(
-            name,
-            email,
+            trimmedName,
+            trimmedEmail,
             hashedPassword,
             (err, result) => {
                 if (err) {

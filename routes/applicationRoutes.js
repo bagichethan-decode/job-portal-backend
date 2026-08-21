@@ -42,4 +42,4 @@ router.delete(
     applicationController.deleteApplication
 );
 
-module.exports = router;
+module.exports = router;                            

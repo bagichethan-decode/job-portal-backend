@@ -47,6 +47,7 @@ const registerUser = (req, res) => {
     bcrypt.hash(password, 10, (err, hashedPassword) => {
         if (err) {
             console.error(err);
+
             return res.status(500).json({
                 message: "Failed to secure password"
             });
@@ -89,9 +90,12 @@ const loginUser = (req, res) => {
         });
     }
 
-    userModel.findUserByEmail(email, (err, results) => {
+    const trimmedEmail = email.trim().toLowerCase();
+
+    userModel.findUserByEmail(trimmedEmail, (err, results) => {
         if (err) {
             console.error(err);
+
             return res.status(500).json({
                 message: "Failed to login"
             });
@@ -105,9 +109,12 @@ const loginUser = (req, res) => {
 
         const user = results[0];
 
+        console.log("LOGIN USER:", user);
+
         bcrypt.compare(password, user.password, (err, isMatch) => {
             if (err) {
                 console.error(err);
+
                 return res.status(500).json({
                     message: "Failed to login"
                 });
@@ -122,7 +129,8 @@ const loginUser = (req, res) => {
             const token = jwt.sign(
                 {
                     userId: user.id,
-                    email: user.email
+                    email: user.email,
+                    role: user.role
                 },
                 process.env.JWT_SECRET,
                 {

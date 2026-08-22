@@ -28,15 +28,23 @@ const getJobsWithFilters = (location, page, limit, callback) => {
     db.query(sql, values, callback);
 };
 
-const createJob = (title, company, description, location, callback) => {
+const createJob = (
+    employerId,
+    title,
+    company,
+    description,
+    location,
+    callback
+) => {
     const sql = `
-        INSERT INTO jobs (title, company, description, location)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO jobs
+        (employer_id, title, company, description, location)
+        VALUES (?, ?, ?, ?, ?)
     `;
 
     db.query(
         sql,
-        [title, company, description, location],
+        [employerId, title, company, description, location],
         callback
     );
 };
@@ -71,6 +79,7 @@ const getJobById = (jobId, callback) => {
 
 const updateJob = (
     jobId,
+    employerId,
     title,
     company,
     description,
@@ -81,22 +90,35 @@ const updateJob = (
         UPDATE jobs
         SET title = ?, company = ?, description = ?, location = ?
         WHERE id = ?
+        AND employer_id = ?
     `;
 
     db.query(
         sql,
-        [title, company, description, location, jobId],
+        [
+            title,
+            company,
+            description,
+            location,
+            jobId,
+            employerId
+        ],
         callback
     );
 };
 
-const deleteJob = (jobId, callback) => {
+const deleteJob = (jobId, employerId, callback) => {
     const sql = `
         DELETE FROM jobs
         WHERE id = ?
+        AND employer_id = ?
     `;
 
-    db.query(sql, [jobId], callback);
+    db.query(
+        sql,
+        [jobId, employerId],
+        callback
+    );
 };
 
 module.exports = {

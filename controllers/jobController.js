@@ -50,16 +50,22 @@ const createJob = (req, res) => {
         });
     }
 
+    const employerId = req.user.userId;
+
     jobModel.createJob(
+        employerId,
         title,
         company,
         description,
         location,
         (err, result) => {
             if (err) {
-                console.error(err);
+                console.error("CREATE JOB DATABASE ERROR:", err);
+
                 return res.status(500).json({
-                    message: "Failed to create job"
+                    message: "Failed to create job",
+                    error: err.message,
+                    code: err.code
                 });
             }
 
@@ -83,6 +89,7 @@ const searchJobs = (req, res) => {
     jobModel.searchJobs(keyword, (err, results) => {
         if (err) {
             console.error(err);
+
             return res.status(500).json({
                 message: "Failed to search jobs"
             });
@@ -98,6 +105,7 @@ const getJobById = (req, res) => {
     jobModel.getJobById(jobId, (err, results) => {
         if (err) {
             console.error(err);
+
             return res.status(500).json({
                 message: "Failed to fetch job"
             });
@@ -115,7 +123,14 @@ const getJobById = (req, res) => {
 
 const updateJob = (req, res) => {
     const jobId = req.params.id;
-    const { title, company, description, location } = req.body;
+    const employerId = req.user.userId;
+
+    const {
+        title,
+        company,
+        description,
+        location
+    } = req.body;
 
     if (!title || !company || !description || !location) {
         return res.status(400).json({
@@ -125,6 +140,7 @@ const updateJob = (req, res) => {
 
     jobModel.updateJob(
         jobId,
+        employerId,
         title,
         company,
         description,
@@ -132,6 +148,7 @@ const updateJob = (req, res) => {
         (err, result) => {
             if (err) {
                 console.error(err);
+
                 return res.status(500).json({
                     message: "Failed to update job"
                 });
@@ -139,7 +156,7 @@ const updateJob = (req, res) => {
 
             if (result.affectedRows === 0) {
                 return res.status(404).json({
-                    message: "Job not found"
+                    message: "Job not found or you do not own this job"
                 });
             }
 
@@ -152,26 +169,31 @@ const updateJob = (req, res) => {
 
 const deleteJob = (req, res) => {
     const jobId = req.params.id;
+    const employerId = req.user.userId;
 
-    jobModel.deleteJob(jobId, (err, result) => {
-       if (err) {
-    console.error(err);
+    jobModel.deleteJob(
+        jobId,
+        employerId,
+        (err, result) => {
+            if (err) {
+                console.error(err);
 
-    return res.status(409).json({
-        message: "Cannot delete job because applications exist for this job"
-    });
-}
+                return res.status(409).json({
+                    message: "Cannot delete job because applications exist for this job"
+                });
+            }
 
-        if (result.affectedRows === 0) {
-            return res.status(404).json({
-                message: "Job not found"
+            if (result.affectedRows === 0) {
+                return res.status(404).json({
+                    message: "Job not found or you do not own this job"
+                });
+            }
+
+            res.status(200).json({
+                message: "Job deleted successfully"
             });
         }
-
-        res.status(200).json({
-            message: "Job deleted successfully"
-        });
-    });
+    );
 };
 
 module.exports = {

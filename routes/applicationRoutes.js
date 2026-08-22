@@ -5,10 +5,12 @@ const router = express.Router();
 const applicationController = require("../controllers/applicationController");
 
 const authMiddleware = require("../middleware/authMiddleware");
+const roleMiddleware = require("../middleware/roleMiddleware");
 
 router.post(
     "/",
     authMiddleware,
+    roleMiddleware("CANDIDATE"),
     applicationController.createApplication
 );
 
@@ -42,4 +44,4 @@ router.delete(
     applicationController.deleteApplication
 );
 
-module.exports = router;                            
+module.exports = router;

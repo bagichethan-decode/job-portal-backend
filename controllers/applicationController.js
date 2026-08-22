@@ -1,6 +1,13 @@
 const applicationModel = require("../models/applicationModel");
 
 const createApplication = (req, res) => {
+
+    if (!req.user || req.user.role !== "CANDIDATE") {
+        return res.status(403).json({
+            message: "Only candidates can apply for jobs"
+        });
+    }
+
     const { jobId } = req.body;
     const userId = req.user.userId;
 
@@ -46,6 +53,7 @@ const getApplicationsByUser = (req, res) => {
         (err, results) => {
             if (err) {
                 console.error(err);
+
                 return res.status(500).json({
                     message: "Failed to fetch applications"
                 });
@@ -66,6 +74,7 @@ const deleteApplication = (req, res) => {
         (err, result) => {
             if (err) {
                 console.error(err);
+
                 return res.status(500).json({
                     message: "Failed to delete application"
                 });
@@ -94,6 +103,7 @@ const getApplicationById = (req, res) => {
         (err, results) => {
             if (err) {
                 console.error(err);
+
                 return res.status(500).json({
                     message: "Failed to fetch application"
                 });
@@ -109,7 +119,6 @@ const getApplicationById = (req, res) => {
         }
     );
 };
-
 
 const updateApplicationStatus = (req, res) => {
     const applicationId = req.params.id;
@@ -193,7 +202,6 @@ const getApplicationStats = (req, res) => {
         }
     );
 };
-
 
 module.exports = {
     createApplication,

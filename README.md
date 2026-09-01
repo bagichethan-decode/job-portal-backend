@@ -59,7 +59,7 @@ Supported application statuses include:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 job-portal-backend/

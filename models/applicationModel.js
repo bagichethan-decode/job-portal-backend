@@ -12,6 +12,7 @@ const createApplication = (userId, jobId, callback) => {
         callback
     );
 };
+
 const getApplicationsByUser = (userId, status, callback) => {
     let sql = `
         SELECT 
@@ -79,19 +80,21 @@ const getApplicationById = (applicationId, userId, callback) => {
 
 const updateApplicationStatus = (
     applicationId,
-    userId,
+    employerId,
     status,
     callback
 ) => {
     const sql = `
         UPDATE applications
-        SET status = ?
-        WHERE id = ? AND user_id = ?
+        JOIN jobs ON applications.job_id = jobs.id
+        SET applications.status = ?
+        WHERE applications.id = ?
+        AND jobs.employer_id = ?
     `;
 
     db.query(
         sql,
-        [status, applicationId, userId],
+        [status, applicationId, employerId],
         callback
     );
 };

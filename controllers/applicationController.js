@@ -122,7 +122,7 @@ const getApplicationById = (req, res) => {
 
 const updateApplicationStatus = (req, res) => {
     const applicationId = req.params.id;
-    const userId = req.user.userId;
+    const employerId = req.user.userId;
     const { status } = req.body;
 
     const allowedStatuses = [
@@ -147,7 +147,7 @@ const updateApplicationStatus = (req, res) => {
 
     applicationModel.updateApplicationStatus(
         applicationId,
-        userId,
+        employerId,
         status,
         (err, result) => {
             if (err) {

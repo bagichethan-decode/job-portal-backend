@@ -35,6 +35,7 @@ router.get(
 router.put(
     "/:id/status",
     authMiddleware,
+    roleMiddleware("EMPLOYER"),
     applicationController.updateApplicationStatus
 );
 

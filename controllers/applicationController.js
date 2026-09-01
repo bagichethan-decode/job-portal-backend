@@ -1,7 +1,6 @@
 const applicationModel = require("../models/applicationModel");
 
 const createApplication = (req, res) => {
-
     if (!req.user || req.user.role !== "CANDIDATE") {
         return res.status(403).json({
             message: "Only candidates can apply for jobs"
@@ -35,7 +34,7 @@ const createApplication = (req, res) => {
                 });
             }
 
-            res.status(201).json({
+            return res.status(201).json({
                 message: "Application submitted successfully",
                 applicationId: result.insertId
             });
@@ -59,7 +58,28 @@ const getApplicationsByUser = (req, res) => {
                 });
             }
 
-            res.status(200).json(results);
+            return res.status(200).json(results);
+        }
+    );
+};
+
+const getApplicationsByEmployer = (req, res) => {
+    const employerId = req.user.userId;
+    const status = req.query.status;
+
+    applicationModel.getApplicationsByEmployer(
+        employerId,
+        status,
+        (err, results) => {
+            if (err) {
+                console.error(err);
+
+                return res.status(500).json({
+                    message: "Failed to fetch employer applications"
+                });
+            }
+
+            return res.status(200).json(results);
         }
     );
 };
@@ -86,7 +106,7 @@ const deleteApplication = (req, res) => {
                 });
             }
 
-            res.status(200).json({
+            return res.status(200).json({
                 message: "Application deleted successfully"
             });
         }
@@ -115,7 +135,7 @@ const getApplicationById = (req, res) => {
                 });
             }
 
-            res.status(200).json(results[0]);
+            return res.status(200).json(results[0]);
         }
     );
 };
@@ -160,13 +180,13 @@ const updateApplicationStatus = (req, res) => {
 
             if (result.affectedRows === 0) {
                 return res.status(404).json({
-                    message: "Application not found"
+                    message: "Application not found or you are not the owner of this job"
                 });
             }
 
-            res.status(200).json({
+            return res.status(200).json({
                 message: "Application status updated successfully",
-                status: status
+                status
             });
         }
     );
@@ -195,10 +215,10 @@ const getApplicationStats = (req, res) => {
             };
 
             results.forEach((row) => {
-                stats[row.status] = row.count;
+                stats[row.status] = Number(row.count);
             });
 
-            res.status(200).json(stats);
+            return res.status(200).json(stats);
         }
     );
 };
@@ -206,6 +226,7 @@ const getApplicationStats = (req, res) => {
 module.exports = {
     createApplication,
     getApplicationsByUser,
+    getApplicationsByEmployer,
     deleteApplication,
     getApplicationById,
     updateApplicationStatus,

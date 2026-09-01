@@ -15,7 +15,7 @@ const createApplication = (userId, jobId, callback) => {
 
 const getApplicationsByUser = (userId, status, callback) => {
     let sql = `
-        SELECT 
+        SELECT
             applications.id,
             applications.user_id,
             applications.job_id,
@@ -25,7 +25,8 @@ const getApplicationsByUser = (userId, status, callback) => {
             jobs.company,
             jobs.location
         FROM applications
-        JOIN jobs ON applications.job_id = jobs.id
+        JOIN jobs
+            ON applications.job_id = jobs.id
         WHERE applications.user_id = ?
     `;
 
@@ -41,10 +42,40 @@ const getApplicationsByUser = (userId, status, callback) => {
     db.query(sql, values, callback);
 };
 
+const getApplicationsByEmployer = (employerId, status, callback) => {
+    let sql = `
+        SELECT
+            applications.id,
+            applications.user_id,
+            applications.job_id,
+            applications.applied_at,
+            applications.status,
+            jobs.title,
+            jobs.company,
+            jobs.location
+        FROM applications
+        JOIN jobs
+            ON applications.job_id = jobs.id
+        WHERE jobs.employer_id = ?
+    `;
+
+    const values = [employerId];
+
+    if (status) {
+        sql += ` AND applications.status = ?`;
+        values.push(status);
+    }
+
+    sql += ` ORDER BY applications.applied_at DESC`;
+
+    db.query(sql, values, callback);
+};
+
 const deleteApplication = (applicationId, userId, callback) => {
     const sql = `
         DELETE FROM applications
-        WHERE id = ? AND user_id = ?
+        WHERE id = ?
+        AND user_id = ?
     `;
 
     db.query(
@@ -56,7 +87,7 @@ const deleteApplication = (applicationId, userId, callback) => {
 
 const getApplicationById = (applicationId, userId, callback) => {
     const sql = `
-        SELECT 
+        SELECT
             applications.id,
             applications.user_id,
             applications.job_id,
@@ -66,7 +97,8 @@ const getApplicationById = (applicationId, userId, callback) => {
             jobs.company,
             jobs.location
         FROM applications
-        JOIN jobs ON applications.job_id = jobs.id
+        JOIN jobs
+            ON applications.job_id = jobs.id
         WHERE applications.id = ?
         AND applications.user_id = ?
     `;
@@ -86,7 +118,8 @@ const updateApplicationStatus = (
 ) => {
     const sql = `
         UPDATE applications
-        JOIN jobs ON applications.job_id = jobs.id
+        JOIN jobs
+            ON applications.job_id = jobs.id
         SET applications.status = ?
         WHERE applications.id = ?
         AND jobs.employer_id = ?
@@ -101,18 +134,25 @@ const updateApplicationStatus = (
 
 const getApplicationStats = (userId, callback) => {
     const sql = `
-        SELECT status, COUNT(*) AS count
+        SELECT
+            status,
+            COUNT(*) AS count
         FROM applications
         WHERE user_id = ?
         GROUP BY status
     `;
 
-    db.query(sql, [userId], callback);
+    db.query(
+        sql,
+        [userId],
+        callback
+    );
 };
 
 module.exports = {
     createApplication,
     getApplicationsByUser,
+    getApplicationsByEmployer,
     deleteApplication,
     getApplicationById,
     updateApplicationStatus,

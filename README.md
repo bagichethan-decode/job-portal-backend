@@ -33,7 +33,7 @@ The backend supports candidate and employer workflows including authentication, 
 - Filter applications by status
 - View application information
 - Update application status
-
+- 
 ### Application Status
 
 Supported application statuses include:
@@ -55,10 +55,8 @@ Supported application statuses include:
 - bcrypt
 - dotenv
 - REST API
-- Git & GitHub
-
----
-
+- Git & GitHub 
+--
 ## Project Structure
 
 ```text
